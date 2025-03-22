@@ -16,8 +16,12 @@ import {
   Code,
 } from "lucide-react";
 
+type ProjectKey = "cosmetique" | "qcm" | "stock" | "vente";
+
 export default function Portfolio() {
-  const [currentImages, setCurrentImages] = useState({
+  const [currentImages, setCurrentImages] = useState<
+    Record<ProjectKey, number>
+  >({
     cosmetique: 0,
     qcm: 0,
     stock: 0,
@@ -51,11 +55,7 @@ export default function Portfolio() {
     { id: "accueil", label: "Accueil", icon: <Home size={24} /> },
     { id: "a-propos", label: "À propos", icon: <User size={24} /> },
     { id: "projets", label: "Projets", icon: <Briefcase size={24} /> },
-    {
-      id: "competences",
-      label: "Competences",
-      icon: <Code size={24} />,
-    },
+    { id: "competences", label: "Compétences", icon: <Code size={24} /> },
     { id: "contact", label: "Contact", icon: <MessageSquare size={24} /> },
   ];
 
@@ -144,7 +144,7 @@ export default function Portfolio() {
       shortDescription: "Une plateforme e-commerce pour produits cosmétiques.",
       fullDescription:
         "Plateforme e-commerce complète avec Spring Boot et ReactJs, intégrant panier, paiement sécurisé via Stripe, authentification, et tableau de bord admin.",
-      github: "https://github.com/ToslinRazafy/cosmetique",
+      github: "https://github.com/ToslinRazafy/Cosm-tique-E-commerce.git",
       languages: ["Spring Boot", "PostgreSQL", "ReactJs", "Tailwind CSS"],
       imageCount: 10,
     },
@@ -154,7 +154,7 @@ export default function Portfolio() {
       shortDescription: "Application de quiz interactifs.",
       fullDescription:
         "Quiz interactif avec Laravel, Socket.io pour mises à jour en temps réel, NextJs avec Chadcn UI, et PostgreSQL pour les données.",
-      github: "https://github.com/ToslinRazafy/qcm",
+      github: "https://github.com/ToslinRazafy/QCM-Gamifie.git",
       languages: [
         "Laravel",
         "PostgreSQL",
@@ -170,7 +170,7 @@ export default function Portfolio() {
       shortDescription: "Système de gestion d’inventaire.",
       fullDescription:
         "Gestion d’inventaire avec NodeJs, Express, Sequelize, MySQL, incluant suivi des stocks et rapports.",
-      github: "https://github.com/ToslinRazafy/stock",
+      github: "https://github.com/ToslinRazafy/Gestion-de-Stock.git",
       languages: ["NodeJs (Express)", "Sequelize", "MySQL", "Tailwind CSS"],
       imageCount: 7,
     },
@@ -180,7 +180,7 @@ export default function Portfolio() {
       shortDescription: "Gestion des ventes.",
       fullDescription:
         "Plateforme de ventes avec Laravel, PostgreSQL, suivi des ventes, rapports en temps réel, et tableau analytique.",
-      github: "https://github.com/ToslinRazafy/vente",
+      github: "https://github.com/ToslinRazafy/Gestion-de-vente.git",
       languages: ["Laravel", "PostgreSQL", "Tailwind CSS"],
       imageCount: 4,
     },
@@ -196,7 +196,7 @@ export default function Portfolio() {
       }));
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [projects]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -206,14 +206,14 @@ export default function Portfolio() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleNextImage = (projectName: string, imageCount: number) => {
+  const handleNextImage = (projectName: ProjectKey, imageCount: number) => {
     setCurrentImages((prev) => ({
       ...prev,
       [projectName]: (prev[projectName] + 1) % imageCount,
     }));
   };
 
-  const handlePrevImage = (projectName: string, imageCount: number) => {
+  const handlePrevImage = (projectName: ProjectKey, imageCount: number) => {
     setCurrentImages((prev) => ({
       ...prev,
       [projectName]: (prev[projectName] - 1 + imageCount) % imageCount,
@@ -384,7 +384,7 @@ export default function Portfolio() {
             className="leading-relaxed text-lg mb-8"
           >
             Je suis RAZAFITSOTRA Toslin, étudiant en troisième année de Licence
-            (L3) en Informatique, spécialité Développement d'Applications
+            (L3) en Informatique, spécialité Développement d&apos;Applications
             Internet et Intranet (DAII), à l’École de Management et d’Innovation
             Technologique (EMIT) de Fianarantsoa. Passionné par le développement
             web, je travaille sur des projets en utilisant des technologies
@@ -409,9 +409,9 @@ export default function Portfolio() {
             }}
             className="text-lg italic mb-8"
           >
-            "L’expérience est une lanterne que l’on porte sur le dos et qui
-            n’éclaire que le chemin parcouru. Mais chaque pas enrichit notre
-            lumière pour les routes à venir." – Confucius (adapté)
+            {
+              '"L’expérience est une lanterne que l’on porte sur le dos et qui n’éclaire que le chemin parcouru. Mais chaque pas enrichit notre lumière pour les routes à venir." – Confucius (adapté)'
+            }
           </motion.blockquote>
         </motion.div>
       </section>
@@ -559,13 +559,13 @@ export default function Portfolio() {
                   onClick={() =>
                     setZoomedImage({
                       project: project.name,
-                      index: currentImages[project.name],
+                      index: currentImages[project.name as ProjectKey],
                     })
                   }
                 >
                   <Image
                     src={`/images/${project.name}/${
-                      currentImages[project.name] + 1
+                      currentImages[project.name as ProjectKey] + 1
                     }.png`}
                     alt={`${project.title} screenshot`}
                     fill
@@ -574,7 +574,10 @@ export default function Portfolio() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handlePrevImage(project.name, project.imageCount);
+                      handlePrevImage(
+                        project.name as ProjectKey,
+                        project.imageCount
+                      );
                     }}
                     style={{ backgroundColor: "var(--secondary)" }}
                     className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-opacity-80 p-1 rounded-full hover:bg-[var(--secondary)] transition-colors"
@@ -584,7 +587,10 @@ export default function Portfolio() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleNextImage(project.name, project.imageCount);
+                      handleNextImage(
+                        project.name as ProjectKey,
+                        project.imageCount
+                      );
                     }}
                     style={{ backgroundColor: "var(--secondary)" }}
                     className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-opacity-80 p-1 rounded-full hover:bg-[var(--secondary)] transition-colors"
@@ -728,9 +734,7 @@ export default function Portfolio() {
           viewport={{ once: true }}
           variants={staggerChildren}
         >
-          <motion.p variants={fadeInUp}>
-            © 2025 RAZAFITSOTRA Toslin
-          </motion.p>
+          <motion.p variants={fadeInUp}>© 2025 RAZAFITSOTRA Toslin</motion.p>
         </motion.div>
       </footer>
 
@@ -783,7 +787,7 @@ export default function Portfolio() {
                 onClick={(e) => {
                   e.stopPropagation();
                   handlePrevImage(
-                    zoomedImage.project,
+                    zoomedImage.project as ProjectKey,
                     projects.find((p) => p.name === zoomedImage.project)!
                       .imageCount
                   );
@@ -807,7 +811,7 @@ export default function Portfolio() {
                 onClick={(e) => {
                   e.stopPropagation();
                   handleNextImage(
-                    zoomedImage.project,
+                    zoomedImage.project as ProjectKey,
                     projects.find((p) => p.name === zoomedImage.project)!
                       .imageCount
                   );
